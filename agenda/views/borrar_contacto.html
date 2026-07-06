@@ -1,0 +1,34 @@
+$def with(contacto, id, name, f_lastname, s_lastname, email, tel)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Borrar</title>
+</head>
+<body>
+    <h1>Borrar</h1>
+    <form action="/guardar_contacto" method="post">
+    
+    <label>ID</label> 
+    <input type="text" name="id" id="" value=$id readonly> <br><br>
+    
+    <label>Nombre</label> 
+    <input type="text" name="name" id="" value=$name> <br><br>
+    
+    <label>Primer apellido</label>
+    <input type="text" name="f_lastname" id="" value=$f_lastname > <br><br>
+    
+    <label>Segundo apellido</label> 
+    <input type="text" name="s_lastname" value=$s_lastname > <br><br>
+    
+    <label>Email</label> 
+    <input type="text" name="email" value=$email > <br><br>
+    
+    <label>Telefono</label>
+    <input type="text" name="tel" value=$tel > <br><br>
+        <button type="button" onclick="history.back()">Regresar</button>
+        <button type="submit">Borrar</button>
+    </form>
+</body>
+</html>
+
