@@ -4,6 +4,37 @@ import sqlite3
 render = web.template.render('views', base='layout')
 
 class ModificarContacto:
+    def actualizarContacto(self,contacto:dict)->bool:
+        try:
+            conexion = sqlite3.connect("sql/agenda.db")
+            conexion.row_factory = sqlite3.Row
+            cursor = conexion.cursor()
+
+            id_contacto = contacto['id_contacto']
+            nombre = contacto['nombre']
+            primer_apellido = contacto['primer_apellido']
+            segundo_apellido = contacto['segundo_apellido']
+            email = contacto['email']
+            telefono = contacto['telefono']
+
+            query = """UPDATE contactos
+                SET nombre = ?,
+                primer_apellido = ?,
+                segundo_apellido = ?,
+                email = ?,
+                telefono = ?,
+                WHERE id_contacto = ?;
+                """
+            cursor.execute(query,(nombre,primer_apellido,segundo_apellido,email,telefono,id_contacto))
+            conexion.commit()
+
+        except sqlite3.Error as error:
+            print(f"ERRROR 104: {error.args}")
+            return False
+            
+        except Exception as error:
+            print(f"ERROR 105: {error.args}")
+            return False 
 
     def buscarContacto(self, id_contacto:int):
         try:
@@ -42,3 +73,15 @@ class ModificarContacto:
         email=contacto['email']
         tel=contacto['telefono']
         return render.modificar_contacto(contacto,id,name,f_lastname,s_lastname,email,tel)
+
+    def POST(self,id_contacto: int):
+        formulario = web.input()
+        contacto = {
+            "id_contacto": formulario['id_contacto'],
+            "nombre": formulario['nombre'],
+            "primer_apellido": formulario['primer_apellido'],
+            "segundo_apellido": formulario['segundo_apellido'],
+            "email": formulario['email'],
+            "telefono": formulario['telefono']
+        }
+        resultado
