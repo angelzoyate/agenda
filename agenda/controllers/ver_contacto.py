@@ -27,18 +27,12 @@ class VerContacto:
             return contacto
         except sqlite3.Error as error:
             print(f"ERROR 102: {error.args}")
-            return []
+            return {}
         except Exception as error:
             print(f"ERROR 103: {error.args}")
-            return []
+            return {}
 
     def GET(self,id_contacto:int):
         print(f"ID_CONTACTO: {id_contacto}")
         contacto = self.buscarContacto(id_contacto)
-        id=contacto['id_contacto']
-        name=contacto['nombre']
-        f_lastname=contacto['primer_apellido']
-        s_lastname=contacto['segundo_apellido']
-        email=contacto['email']
-        tel=contacto['telefono']
-        return render.ver_contacto(contacto,id,name,f_lastname,s_lastname,email,tel)
+        return render.ver_contacto(contacto)
