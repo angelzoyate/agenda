@@ -3,36 +3,46 @@ import sqlite3
 
 render = web.template.render('views', base='layout')
 
-class VerContacto:
+class InsertarContacto:
+    
+    def GET(self):
+        
+        return render.insertar_contacto()
 
-    def buscarContacto(self, id_contacto:int):
+    def POST(self):
+       
+        datos = web.input()
+        
+        nombre = datos.nombre
+        primer_ap = datos.primer_apellido
+        segundo_ap = datos.segundo_apellido
+        email = datos.email
+        telefono = datos.telefono
+
+        exito = False
+
         try:
+            
             conexion = sqlite3.connect("sql/agenda.db")
-            conexion.row_factory = sqlite3.Row
             cursor = conexion.cursor()
-            query = "SELECT * FROM contactos WHERE id_contacto = ?"
-            cursor.execute(query,(id_contacto,))
-            resultado = cursor.fetchone()
-
-            contacto = {
-                "id_contacto":resultado[0],
-                "nombre":resultado[1],
-                "primer_apellido":resultado[2],
-                "segundo_apellido":resultado[3],
-                "email":resultado[4],
-                "telefono":resultado[5]
-            }
+            
+            query = """
+                INSERT INTO contactos (nombre, primer_apellido, segundo_apellido, email, telefono)
+                VALUES (?, ?, ?, ?, ?)
+            """
+            
+            cursor.execute(query, (nombre, primer_ap, segundo_ap, email, telefono))
+            conexion.commit()
             conexion.close()
-            print(contacto)
-            return contacto
+            exito = True
+            
         except sqlite3.Error as error:
-            print(f"ERROR 102: {error.args}")
-            return {}
-        except Exception as error:
-            print(f"ERROR 103: {error.args}")
-            return {}
+            print(f"ERROR AL INSERTAR: {error.args}")
+            return f"Hubo un error en la base de datos: {error.args}"
 
-    def GET(self,id_contacto:int):
-        print(f"ID_CONTACTO: {id_contacto}")
-        contacto = self.buscarContacto(id_contacto)
-        return render.ver_contacto(contacto)
+        if exito:
+            web.ctx.status = '303 See Other'
+            web.header('Location', '/lista_contactos')
+            return ''
+        else:
+            return "No se pudo guardar el contacto."

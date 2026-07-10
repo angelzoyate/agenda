@@ -53,15 +53,16 @@ class BorrarContacto:
         print(f"ID_CONTACTO: {id_contacto}")
         contacto = self.buscarContacto(id_contacto)
         if contacto is None:
-            raise web.seeother('/lista_contactos') # Si no existe, redirige
+            raise web.seeother('/lista_contactos') 
         return render.borrar_contacto(contacto)
     
     def POST(self, id_contacto: int):
-        # Llamamos al método que borra usando el ID que viene en la URL
+        
         exito = self.eliminarContacto(id_contacto)
         
         if exito:
-            # Redirige de vuelta a la lista de contactos si se borró con éxito
-            raise web.seeother('/lista_contactos')
+            web.ctx.status = '303 See Other'
+            web.header('Location', '/lista_contactos')
+            return ''
         else:
             return "No se pudo eliminar el contacto. Ocurrió un error."
